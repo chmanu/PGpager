@@ -1,0 +1,35 @@
+\echo 'Menu des requêtes simplifiées :\n'
+\echo '\t\t\t\033[35;1m:conninfo\033[0m\t-- Liste les connexions en cours'
+\echo '\t\t\t\033[35;1m:activity\033[0m\t-- Activité de la BDD'
+\echo '\t\t\t\033[35;1m:dbsize\033[0m\t\t-- Taille de la BDD'
+\echo '\t\t\t\033[35;1m:shemasize\033[0m\t-- Taille des schémas'
+\echo '\t\t\t\033[35;1m:tablesize\033[0m\t-- Taille des tables '
+\echo '\t\t\t\033[35;1m:sp\033[0m\t\t-- Search Path courant'
+\echo '\t\t\t\033[35;1m:unquiet\033[0m\t-- désactive le mode quiet'
+\echo '\t\t\t\033[35;1m:pgpager\033[0m\t-- Utiliser PGpager (par défaut)'
+\echo '\t\t\t\033[35;1m:nopgpager\033[0m\t-- Désactive PGpager (coloration)'
+\echo '\t\t\t\033[35;1m:menu\033[0m\t\t-- Affiche ce menu'
+\echo '\t\t\t\033[35;1m\\h\033[0m\t\t-- Aide sur les commandes SQL'
+\echo '\t\t\t\033[35;1m\\?\033[0m\t\t-- Aide sur les instructions psql'
+
+\set menu '\\i '
+
+\set settings 'select name, setting from pg_settings;'
+
+\set conninfo 'select usename, count(*) from pg_stat_activity group by usename;'
+
+\set activity 'select datname, pid, usename, application_name,state, now()-state_change  durée_inactivité from pg_stat_activity;'
+
+\set dbsize 'SELECT datname, pg_size_pretty(pg_database_size(datname)) db_size FROM pg_database where datname=current_database();'
+
+\set tablesize 'SELECT schemaname, tablename, pg_size_pretty(pg_relation_size(\'"\' || schemaname || \'"."\' || tablename || \'"\')) AS taille, pg_size_pretty(pg_total_relation_size(\'"\' || schemaname || \'"."\' || tablename|| \'"\')) AS taille_totale FROM pg_tables where schemaname not in (\'pg_catalog\', \'information_schema\') and tableowner = user;'
+
+\set shemasize 'SELECT schemaname, pg_size_pretty(t.taille::bigint) AS taille_table, pg_size_pretty(t.taille_totale::bigint) AS taille_totale_table FROM (SELECT schemaname, sum(pg_relation_size(\'"\' || schemaname || \'"."\' || tablename || \'"\')) AS taille, sum(pg_total_relation_size(\'"\' || schemaname || \'"."\' || tablename|| \'"\')) AS taille_totale FROM pg_tables where tableowner = user GROUP BY schemaname) as t ORDER BY taille_totale DESC;'
+
+\set sp 'show search_path;'
+
+\set unquiet '\\set quiet 0'
+
+\set pgpager '\\setenv PAGER PGpager\n \\pset pager always'
+
+\set nopgpager '\\setenv PAGER \n \\pset pager off'
