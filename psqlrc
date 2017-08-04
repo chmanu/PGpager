@@ -1,0 +1,21 @@
+\set QUIET 1
+\set PROMPT1 '%[%033[1;32m%]%n%[%033[0m%]%[%033[1;35m%]@%[%033[0m%]%[%033[1;31m%]%/%[%033[0m%]%[%033[1;34m%]%R%#%x%[%033[0m%] '
+\set PROMPT2 '%[%033[1;34m%]%R%#%x %[%033[0m%]'
+
+\pset null '(null)'
+\x auto
+\timing
+\set HISTSIZE 2000
+
+\qecho ' '
+\qecho ' \033[33;1mVous voilà connecté sur votre base de données, prenez en soin\033[0m'
+\qecho ' '
+\qecho ' Vous trouverez le source de cette configuration  '
+\qecho '          \033[36;1mhttps://github.com/chmanu/PGpager\033[0m'
+\qecho ' '
+\qecho ' '
+
+\setenv PAGER ${PSQLDIR}/PGpager
+\pset pager always
+
+\i ${PSQLDIR}/menuPG
